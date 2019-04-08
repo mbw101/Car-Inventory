@@ -149,9 +149,8 @@
             this.exitButton.Location = new System.Drawing.Point(289, 367);
             this.exitButton.Name = "exitButton";
             this.exitButton.Size = new System.Drawing.Size(75, 23);
-            this.exitButton.TabIndex = 12;
+            this.exitButton.TabIndex = 0;
             this.exitButton.Text = "Exit";
-            this.exitButton.UseVisualStyleBackColor = true;
             this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
             // 
             // Form1
@@ -174,6 +173,7 @@
             this.Controls.Add(this.yearInput);
             this.Name = "Form1";
             this.Text = "Car Inventory";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

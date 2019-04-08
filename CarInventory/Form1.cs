@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace CarInventory
 {
@@ -16,6 +17,8 @@ namespace CarInventory
         public Form1()
         {
             InitializeComponent();
+
+            loadDB();
         }
 
         private void addButton_Click(object sender, EventArgs e)
@@ -47,7 +50,7 @@ namespace CarInventory
 
             int index = inventory.FindIndex(car => car.make == makeInput.Text);
 
-            if (index >-1)
+            if (index > -1)
             {
                 inventory.RemoveAt(index);
             }
@@ -66,6 +69,64 @@ namespace CarInventory
                      + c.colour + " "
                      + c.mileage + "\n";
             }
+        }
+
+        public void loadDB()
+        {
+            string year, make, colour, mileage;
+
+            XmlReader reader = XmlReader.Create("Resources/CarInventory.xml", null);
+
+            // while there is another chunk to read
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Text)
+                {
+                    year = reader.ReadString();
+
+                    reader.ReadToNextSibling("make");
+                    make = reader.ReadString();
+
+                    reader.ReadToNextSibling("colour");
+                    colour = reader.ReadString();
+
+                    reader.ReadToNextSibling("mileage");
+                    mileage = reader.ReadString();
+
+                    Car c = new Car(year, make, colour, mileage);
+                    inventory.Add(c);
+                }
+            }
+
+            reader.Close();
+        }
+
+        public void saveDB()
+        {
+            XmlWriter writer = XmlWriter.Create("Resources/CarInventory.xml", null);
+
+            writer.WriteStartElement("Inventory");
+
+            foreach (Car c in inventory)
+            {
+                writer.WriteStartElement("Car");
+
+                writer.WriteElementString("year", c.year);
+                writer.WriteElementString("make", c.make);
+                writer.WriteElementString("colour", c.colour);
+                writer.WriteElementString("mileage", c.mileage);
+
+                writer.WriteEndElement();
+            }
+
+            writer.WriteEndElement();
+
+            writer.Close();
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            saveDB();
         }
 
         private void exitButton_Click(object sender, EventArgs e)
